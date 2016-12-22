@@ -68,11 +68,12 @@ subhead2 = ttk.Label(root, text='Enter ship date (DD/MM/YYYY)...')
 subhead2.grid(row=2, column=0)
 entry = ttk.Entry(root, width=10)
 entry.grid(row=2, column=1)
+# TODO: If no Radiobutton is selected then entry field should be disabled.
 
 
 calculate = ttk.Button(root, text='Calculate', command=calc)
 calculate.grid(row=2, column=3)
-# TODO: If no Radiobutton is selected then calculate button should be disalbled.
+# TODO: If no Radiobutton is selected then calculate button should be disabled.
 
 
 root.mainloop()

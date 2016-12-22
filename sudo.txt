@@ -1,0 +1,9 @@
+
+if air is selected:
+    transitTime = 10
+if sea is selected:
+    transitTime = 42
+
+
+rawDue = shipDate + transitTime
+
