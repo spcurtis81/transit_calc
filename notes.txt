@@ -1,0 +1,155 @@
+#!/usr/bin/python3
+# Script for Python3.* by Stephen Curtis - 19 Dec 2016
+
+from tkinter import *
+from tkinter import ttk
+from datetime import datetime
+from datetime import timedelta
+import calendar
+
+#-------------------------------------------------------------------
+# Variables:
+#-------------------------------------------------------------------
+months = ('Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec')
+thirty_one = ('Jan', 'Mar', 'May', 'Jul', 'Aug', 'Oct', 'Dec')
+thirty = ('Apr', 'Jun', 'Sep', 'Nov')
+today = datetime.now()
+
+
+#-------------------------------------------------------------------
+# Functions:
+#-------------------------------------------------------------------
+
+def ship_method():
+	global transit_time
+	if method.get() == 'sea':
+		transit_time = 42
+	elif method.get() == 'air':
+		transit_time = 10
+	else:
+		TypeError("Please select a transit method")
+	return transit_time
+
+def ship_date():
+	global ship
+	if ship_pick.get() == 'today':
+		ship = datetime.now()
+	elif ship_pick.get() == 'tomorrow':
+		ship = datetime.now + timedelta(days=1)
+	elif ship_pick.get() == 'friday':
+		ship = '>>RUN FRIDAY'
+	elif ship_pick.get() == 'select':
+		ship = '>>RUN DATE PICKER'
+	else:
+		TypeError('Please select a valid ship date')
+	return ship
+
+# Creats integer vars for today's dd/mm/yyyy for use in date picker spinbox as default values
+def today_ints():
+	global current_dd, current_mm, current_yyyy
+	current_dd = int(datetime.strftime(datetime.now(), '%d'))
+	current_mm = datetime.strftime(datetime.now(), '%b')
+	current_yyyy = int(datetime.strftime(datetime.now(), '%Y'))
+
+def date_picker():
+	day = StringVar()
+	day_select = ttk.Combobox(root, textvariable=day)
+	day_select.grid(row=3, column=3)
+
+	if (mth_select.get() in thirty_one):
+		day_select.config(values=(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31))
+	elif (mth_select.get() in thirty):
+		day_select.config(values=(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30))
+	elif calendar.isleap(int(yr_select.get())) == False:
+		day_select.config(values=(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28))
+	elif calendar.isleap(int(yr_select.get())) == True:
+		day_select.config(values=(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29))
+
+	day_select.set(current_dd)
+
+def friday():
+	weekday = today.weekday()
+	global due
+	due = ''
+	if weekday == 0:
+		due = today + timedelta(days=4)
+	elif weekday == 1:
+		due = today + timedelta(days=3)
+	elif weekday == 2:
+		due = today + timedelta(days=2)
+	elif weekday == 3:
+		due = today + timedelta(days=1)
+	elif weekday == 4:
+		due = today + timedelta(days=0)
+	elif weekday == 5:
+		due = today + timedelta(days=-1)
+	elif weekday == 6:
+		due = today + timedelta(days=-2)
+	else:
+		TypeError("Possible Error: Unrecognised Week Day")
+	return due
+
+def calc():
+	pass
+
+#-------------------------------------------------------------------
+# Interface
+#-------------------------------------------------------------------
+
+root = Tk()
+
+# Title
+title = ttk.Label(root, text='ISM Transit Time Calculator', font=('verdana', 16, 'bold'))
+title.grid(row=0, columnspan=5)
+
+# This section contains radiobuttons for selcting whether air or sea transport method
+subhead1 = ttk.Label(root, text='Select Shipping Method:', font=('verdana', 10, 'bold'))
+subhead1.grid(row=1, column=0)
+method = StringVar()
+sea = ttk.Radiobutton(root, text='Sea', variable=method, value='sea')
+sea.grid(row=1, column=1)
+air = ttk.Radiobutton(root, text='Air', variable=method, value='air')
+air.grid(row=1, column=2)
+
+# Radiobuttons for selecting the ship date
+subhead2 = ttk.Label(root, text='Select Ship Date: ', font=('verdana', 10, 'bold'))
+subhead2.grid(row=2, column=0)
+ship_pick = StringVar()
+today = ttk.Radiobutton(root, text='Today', variable=ship_pick, value='today')
+today.grid(row=2, column=1)
+today.config(state=ACTIVE)
+tomorrow = ttk.Radiobutton(root, text='Tomorrow', variable=ship_pick, value='tomorrow')
+tomorrow.grid(row=2, column=2)
+nxt_friday = ttk.Radiobutton(root, text='Friday', variable=ship_pick, value='nxt_friday')
+nxt_friday.grid(row=2, column=3)
+select = ttk.Radiobutton(root, text='Enter a Date', variable=ship_pick, value='select')
+select.grid(row=2, column=4)
+
+# Date Picker
+today_ints()
+subhead3 = ttk.Label(root, text='Pick Date: ', font=('verdana', 10, 'bold'))
+subhead3.grid(row=3, column=0)
+yr = StringVar()
+yr_select = Spinbox(root, from_=2000, to=2025, textvariable=yr)
+yr_select.grid(row=3, column=1)
+yr.set(current_yyyy)
+mth = StringVar()
+mth_select = ttk.Combobox(root, textvariable=mth)
+mth_select.grid(row=3, column=2)
+mth_select.config(values=months)
+mth_select.set(current_mm)
+date_picker()
+
+# Calculate
+calc_but = ttk.Button(root, text='Calculate')
+calc_but.grid(row=4)
+subhead4 = ttk.Label(root, text='Expected Arrival:', font=('verdana', 10, 'bold'))
+subhead4.grid(row=5, column=0)
+result = ttk.Label(root, text='<<RESULT>>', font=('verdana', 10, 'bold'))
+result.grid(row=5, column=1)
+
+fri = ttk.Label(root, text=str(today))
+fri.grid(row=6)
+
+
+root.mainloop()

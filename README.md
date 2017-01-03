@@ -2,6 +2,16 @@
 * tkinter
 * datetime
 
+### rev_003 - Re-write
+*22nd Dec 2016*
+#### Current State
+* Similar to previous version but an attempt write more efficient code.
+
+#### Known Bugs 
+* Still looking for the most elegant solution for the date picker.
+
+-----
+
 ### rev_002 - 1st Working Version
 *17th Dec 2016*
 #### Current State
